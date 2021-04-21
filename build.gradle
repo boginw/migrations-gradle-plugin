@@ -1,0 +1,31 @@
+plugins {
+    id 'java-gradle-plugin'
+}
+
+group 'org.mybatis.gradle'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = 'org.mybatis.gradle.migrations-gradle-plugin'
+            implementationClass = 'org.mybatis.gradle.MigrationsPlugin'
+        }
+    }
+}
+
+dependencies {
+    testImplementation gradleTestKit()
+    implementation 'org.mybatis:mybatis-migrations:3.3.9'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testImplementation "org.mockito:mockito-core:3.+"
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
