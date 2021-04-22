@@ -58,7 +58,7 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
     @Test
     void whenTaskIsRun_expectInitializeCommandToBeRun() {
         task.run();
-        verify(command).execute();
+        verify(command).execute(any());
     }
 
     @Test
