@@ -4,6 +4,7 @@ import org.apache.ibatis.migration.commands.InitializeCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
+import org.mybatis.gradle.ClassLoaderFactory;
 import org.mybatis.gradle.CommandFactory;
 
 import javax.inject.Inject;
@@ -13,8 +14,8 @@ public class InitTask extends MigrationsTask {
     private String idPattern;
 
     @Inject
-    public InitTask(CommandFactory factory) {
-        super(factory);
+    public InitTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
+        super(factory, classLoaderFactory);
     }
 
     @Option(option = "idPattern", description = "Default file prefix")
@@ -27,6 +28,8 @@ public class InitTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         options.setIdPattern(idPattern);
-        factory.create(InitializeCommand.class, options).execute();
+        InitializeCommand command = factory.create(InitializeCommand.class, options);
+        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
+        command.execute();
     }
 }

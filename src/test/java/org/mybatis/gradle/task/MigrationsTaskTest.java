@@ -1,6 +1,6 @@
 package org.mybatis.gradle.task;
 
-import org.apache.ibatis.migration.commands.Command;
+import org.apache.ibatis.migration.commands.BaseCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.apache.ibatis.migration.options.SelectedPaths;
 import org.gradle.api.Project;
@@ -10,21 +10,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mybatis.gradle.ClassLoaderFactory;
 import org.mybatis.gradle.CommandFactory;
 import org.mybatis.gradle.MigrationsExtension;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
+abstract class MigrationsTaskTest<T extends MigrationsTask, C extends BaseCommand> {
     @Mock
-    CommandFactory factory;
+    CommandFactory commandFactory;
+    @Mock
+    ClassLoaderFactory classLoaderFactory;
     Project project;
     C command;
     T task;
+    URLClassLoader classLoader;
 
     @BeforeEach
     void setUp() {
@@ -32,10 +40,12 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
         MockitoAnnotations.openMocks(this);
 
         project = ProjectBuilder.builder().build();
+        classLoader = new URLClassLoader(new URL[]{getUrl()});
+        when(classLoaderFactory.getClassLoader(project)).thenReturn(classLoader);
         MigrationsExtension defaultValues = new MigrationsExtension(project.getObjects(), project.getLayout());
         project.getExtensions().add(MigrationsExtension.class, "migrations", defaultValues);
-        task = project.getTasks().create(getType().getSimpleName(), getType(), factory);
-        doReturn(command).when(factory).create(eq(getMigrationsCommandType()), any(SelectedOptions.class));
+        task = project.getTasks().create(getType().getSimpleName(), getType(), commandFactory, classLoaderFactory);
+        doReturn(command).when(commandFactory).create(eq(getMigrationsCommandType()), any(SelectedOptions.class));
     }
 
     abstract Class<T> getType();
@@ -49,9 +59,15 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
     }
 
     @Test
-    void whenTaskIsRun_expectInitializeCommandToBeRun() {
+    void whenTaskIsRun_expectCommandToBeRun() {
         task.run();
         verify(command).execute(any());
+    }
+
+    @Test
+    void whenTaskIsRun_expectCommandToHaveCorrectClassLoader() {
+        task.run();
+        verify(command).setDriverClassLoader(classLoader);
     }
 
     @Test
@@ -63,7 +79,7 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
         task.setExtension(extension);
         task.run();
 
-        verify(factory).create(any(), optionsEqualTo(options));
+        verify(commandFactory).create(any(), optionsEqualTo(options));
     }
 
     @Test
@@ -75,7 +91,7 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
         task.setExtension(extension);
         task.run();
 
-        verify(factory).create(any(), optionsEqualTo(options));
+        verify(commandFactory).create(any(), optionsEqualTo(options));
     }
 
     @Test
@@ -87,7 +103,7 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
         task.setExtension(extension);
         task.run();
 
-        verify(factory).create(any(), optionsEqualTo(options));
+        verify(commandFactory).create(any(), optionsEqualTo(options));
     }
 
     SelectedOptions optionsEqualTo(final SelectedOptions options) {
@@ -108,6 +124,14 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
         extension.getBaseDir().set(options.getPaths().getBasePath());
         extension.getForce().set(options.isForce());
         return extension;
+    }
+
+    private URL getUrl() {
+        try {
+            return URI.create("https://mybatis.net").toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     boolean optionsAreEqual(SelectedOptions options, SelectedOptions otherOptions) {

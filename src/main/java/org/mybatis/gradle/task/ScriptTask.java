@@ -4,6 +4,7 @@ import org.apache.ibatis.migration.commands.ScriptCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
+import org.mybatis.gradle.ClassLoaderFactory;
 import org.mybatis.gradle.CommandFactory;
 
 import javax.inject.Inject;
@@ -14,8 +15,8 @@ public class ScriptTask extends MigrationsTask {
     private String to;
 
     @Inject
-    public ScriptTask(CommandFactory factory) {
-        super(factory);
+    public ScriptTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
+        super(factory, classLoaderFactory);
     }
 
     @Option(option = "from", description = "Version to generate from")
@@ -32,11 +33,12 @@ public class ScriptTask extends MigrationsTask {
     @TaskAction
     public void run() {
         SelectedOptions options = getSelectedOptions();
-        ScriptCommand scriptCommand = factory.create(ScriptCommand.class, options);
+        ScriptCommand command = factory.create(ScriptCommand.class, options);
+        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         if (to != null) {
-            scriptCommand.execute(from, to);
+            command.execute(from, to);
         } else {
-            scriptCommand.execute(from);
+            command.execute(from);
         }
     }
 }

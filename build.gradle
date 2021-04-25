@@ -1,5 +1,6 @@
 plugins {
     id 'java-gradle-plugin'
+    id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
 group 'org.mybatis.gradle'
@@ -19,6 +20,7 @@ gradlePlugin {
 }
 
 dependencies {
+    compileOnly(gradleApi())
     testImplementation gradleTestKit()
     implementation 'org.mybatis:mybatis-migrations:3.3.9'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'

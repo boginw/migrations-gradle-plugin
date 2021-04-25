@@ -32,7 +32,7 @@ class InitTaskTest extends MigrationsTaskTest<InitTask, InitializeCommand> {
         task.setIdPattern(options.getIdPattern());
         task.run();
 
-        verify(factory).create(any(), optionsEqualTo(options));
+        verify(commandFactory).create(any(), optionsEqualTo(options));
     }
 
     @Override

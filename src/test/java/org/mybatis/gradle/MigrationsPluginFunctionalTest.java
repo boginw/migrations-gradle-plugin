@@ -7,14 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mybatis.gradle.task.InitTask;
+import org.mybatis.gradle.task.NewTask;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MigrationsPluginFunctionalTest {
     String baseDir = "BASE-DIR";
@@ -32,12 +32,19 @@ class MigrationsPluginFunctionalTest {
 
         appendToGradleBuildFile("""
                 plugins {
+                    id 'java'
                     id 'org.mybatis.gradle.migrations-gradle-plugin'
                 }
                 migrations {
                     baseDir = new File('%s')
                     environment = '%s'
                     force = %s
+                }
+                repositories {
+                        mavenCentral()
+                }
+                dependencies {
+                    implementation 'com.h2database:h2:1.4.200'
                 }
                 """.formatted(baseDir, environment, force)
         );
@@ -51,14 +58,14 @@ class MigrationsPluginFunctionalTest {
                 .withPluginClasspath()
                 .build();
 
-        result.getTasks().forEach(t -> assertEquals(t.getOutcome(), TaskOutcome.SUCCESS));
+        result.getTasks().forEach(t -> assertNotEquals(t.getOutcome(), TaskOutcome.FAILED));
     }
 
     @Test
     void whenNewAndHasMigrationsExtension_expectBaseDirAndEnvironmentFileCreated() {
         BuildResult result = GradleRunner.create()
                 .withProjectDir(buildDir)
-                .withArguments(InitTask.TASK_NAME)
+                .withArguments(InitTask.TASK_NAME, "--debug")
                 .withPluginClasspath()
                 .build();
 
@@ -67,6 +74,17 @@ class MigrationsPluginFunctionalTest {
         File file = Path.of(buildDir.getPath(), baseDir, "environments", environment + ".properties").toFile();
         assertTrue(file.exists());
         assertTrue(file.isFile());
+    }
+
+    @Test
+    void whenHelpIsRunWithNewTask_expectNameToBeIncluded() {
+        BuildResult result = GradleRunner.create()
+                .withProjectDir(buildDir)
+                .withArguments("help", "--task", NewTask.TASK_NAME)
+                .withPluginClasspath()
+                .build();
+
+        assertTrue(result.getOutput().contains("--name"));
     }
 
     protected void appendToGradleBuildFile(String append) throws IOException {

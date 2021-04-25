@@ -4,6 +4,7 @@ import org.apache.ibatis.migration.commands.VersionCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
+import org.mybatis.gradle.ClassLoaderFactory;
 import org.mybatis.gradle.CommandFactory;
 
 import javax.inject.Inject;
@@ -13,8 +14,8 @@ public class VersionTask extends MigrationsTask {
     private String version;
 
     @Inject
-    public VersionTask(CommandFactory factory) {
-        super(factory);
+    public VersionTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
+        super(factory, classLoaderFactory);
     }
 
     @Option(option = "version", description = "Version to migrate to")
@@ -26,6 +27,8 @@ public class VersionTask extends MigrationsTask {
     @TaskAction
     public void run() {
         SelectedOptions options = getSelectedOptions();
-        factory.create(VersionCommand.class, options).execute(version);
+        VersionCommand command = factory.create(VersionCommand.class, options);
+        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
+        command.execute(version);
     }
 }

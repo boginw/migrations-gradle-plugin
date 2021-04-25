@@ -1,0 +1,39 @@
+name: Java CI
+
+on: [ push ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.5.4
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: "password-here"
+          MYSQL_DATABASE: "mybatis"
+          MYSQL_USER: "mybatis"
+          MYSQL_PASSWORD: "migrations"
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+    steps:
+      -   uses: actions/checkout@v2
+      -   name: Set up JDK
+          uses: actions/setup-java@v1
+          with:
+            java-version: 15
+      -   name: Verify MariaDB connection
+          run: |
+            while ! mysqladmin ping -h"127.0.0.1" -P"3306" --silent; do
+              sleep 1
+            done
+      -   name: Cache Gradle packages
+          uses: actions/cache@v2
+          with:
+            path: ~/.gradle/caches
+            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+            restore-keys: ${{ runner.os }}-gradle
+      -   name: Testing
+          run: ./gradlew test
+      -   name: Building and linting
+          run: ./gradlew build --exclude-task test

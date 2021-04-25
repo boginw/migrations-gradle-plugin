@@ -4,6 +4,7 @@ import org.apache.ibatis.migration.commands.UpCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
+import org.mybatis.gradle.ClassLoaderFactory;
 import org.mybatis.gradle.CommandFactory;
 
 import javax.inject.Inject;
@@ -13,8 +14,8 @@ public class UpTask extends MigrationsTask {
     private String steps;
 
     @Inject
-    public UpTask(CommandFactory factory) {
-        super(factory);
+    public UpTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
+        super(factory, classLoaderFactory);
     }
 
     @Option(option = "steps", description = "Number of steps")
@@ -26,6 +27,8 @@ public class UpTask extends MigrationsTask {
     @TaskAction
     public void run() {
         SelectedOptions options = getSelectedOptions();
-        factory.create(UpCommand.class, options).execute(steps);
+        UpCommand command = factory.create(UpCommand.class, options);
+        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
+        command.execute(steps);
     }
 }

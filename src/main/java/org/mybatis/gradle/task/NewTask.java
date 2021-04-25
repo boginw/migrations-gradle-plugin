@@ -4,6 +4,7 @@ import org.apache.ibatis.migration.commands.NewCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
+import org.mybatis.gradle.ClassLoaderFactory;
 import org.mybatis.gradle.CommandFactory;
 
 import javax.inject.Inject;
@@ -13,8 +14,8 @@ public class NewTask extends MigrationsTask {
     private String name;
 
     @Inject
-    public NewTask(CommandFactory factory) {
-        super(factory);
+    public NewTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
+        super(factory, classLoaderFactory);
     }
 
     @Option(option = "name", description = "Name of the migration")
@@ -26,6 +27,8 @@ public class NewTask extends MigrationsTask {
     @TaskAction
     public void run() {
         SelectedOptions options = getSelectedOptions();
-        factory.create(NewCommand.class, options).execute(name);
+        NewCommand command = factory.create(NewCommand.class, options);
+        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
+        command.execute(name);
     }
 }
