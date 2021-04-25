@@ -1,46 +1,33 @@
 package org.mybatis.gradle;
 
-import org.gradle.api.internal.provider.DefaultProperty;
-import org.gradle.api.internal.provider.PropertyHost;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.Input;
 
-import java.io.File;
+import javax.inject.Inject;
 
-public abstract class MigrationsExtension {
-    @Input
-    abstract public Property<File> getBaseDir();
+public class MigrationsExtension {
+    private final DirectoryProperty baseDir;
+    private final Property<String> environment;
+    private final Property<Boolean> force;
 
-    @Input
-    abstract public Property<String> getEnvironment();
+    @Inject
+    public MigrationsExtension(ObjectFactory factory, ProjectLayout layout) {
+        this.baseDir = factory.directoryProperty().convention(layout.getProjectDirectory().dir("migrations"));
+        this.environment = factory.property(String.class).convention("development");
+        this.force = factory.property(Boolean.class).convention(false);
+    }
 
-    @Input
-    abstract public Property<Boolean> getForce();
+    public DirectoryProperty getBaseDir() {
+        return baseDir;
+    }
 
-    public static MigrationsExtension defaultValues() {
-        return new MigrationsExtension() {
-            private final Property<Boolean> force = getDefaultValue(Boolean.class, false);
-            private final Property<String> environment = getDefaultValue(String.class, "development");
-            private final Property<File> baseDir = getDefaultValue(File.class, new File("./"));
+    public Property<String> getEnvironment() {
+        return environment;
+    }
 
-            @Override
-            public Property<File> getBaseDir() {
-                return baseDir;
-            }
-
-            @Override
-            public Property<String> getEnvironment() {
-                return environment;
-            }
-
-            @Override
-            public Property<Boolean> getForce() {
-                return force;
-            }
-
-            private <T> Property<T> getDefaultValue(Class<T> klass, T value) {
-                return new DefaultProperty<>(PropertyHost.NO_OP, klass).value(value);
-            }
-        };
+    public Property<Boolean> getForce() {
+        return force;
     }
 }

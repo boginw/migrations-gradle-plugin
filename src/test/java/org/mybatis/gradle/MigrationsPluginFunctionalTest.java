@@ -6,6 +6,7 @@ import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mybatis.gradle.task.InitTask;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -16,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MigrationsPluginFunctionalTest {
-    String baseDir = "THIS IS BASE DIR";
-    String environment = "THIS IS THE ENVIRONMENT";
+    String baseDir = "BASE-DIR";
+    String environment = "ENVIRONMENT";
     boolean force = true;
 
     @TempDir
@@ -51,6 +52,21 @@ class MigrationsPluginFunctionalTest {
                 .build();
 
         result.getTasks().forEach(t -> assertEquals(t.getOutcome(), TaskOutcome.SUCCESS));
+    }
+
+    @Test
+    void whenNewAndHasMigrationsExtension_expectBaseDirAndEnvironmentFileCreated() {
+        BuildResult result = GradleRunner.create()
+                .withProjectDir(buildDir)
+                .withArguments(InitTask.TASK_NAME)
+                .withPluginClasspath()
+                .build();
+
+        result.getTasks().forEach(t -> assertEquals(t.getOutcome(), TaskOutcome.SUCCESS));
+
+        File file = Path.of(buildDir.getPath(), baseDir, "environments", environment + ".properties").toFile();
+        assertTrue(file.exists());
+        assertTrue(file.isFile());
     }
 
     protected void appendToGradleBuildFile(String append) throws IOException {

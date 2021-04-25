@@ -4,10 +4,7 @@ import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.gradle.task.BootstrapTask;
-import org.mybatis.gradle.task.InitTask;
-import org.mybatis.gradle.task.PendingTask;
-import org.mybatis.gradle.task.StatusTask;
+import org.mybatis.gradle.task.*;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -43,5 +40,30 @@ class MigrationsPluginTest {
     @Test
     void expectPendingToBeRegistered() {
         assertNotNull(project.getTasks().withType(PendingTask.class).getByName(PendingTask.TASK_NAME));
+    }
+
+    @Test
+    void expectNewToBeRegistered() {
+        assertNotNull(project.getTasks().withType(NewTask.class).getByName(NewTask.TASK_NAME));
+    }
+
+    @Test
+    void expectUpToBeRegistered() {
+        assertNotNull(project.getTasks().withType(UpTask.class).getByName(UpTask.TASK_NAME));
+    }
+
+    @Test
+    void expectDownToBeRegistered() {
+        assertNotNull(project.getTasks().withType(DownTask.class).getByName(DownTask.TASK_NAME));
+    }
+
+    @Test
+    void expectVersionToBeRegistered() {
+        assertNotNull(project.getTasks().withType(VersionTask.class).getByName(VersionTask.TASK_NAME));
+    }
+
+    @Test
+    void expectScriptToBeRegistered() {
+        assertNotNull(project.getTasks().withType(ScriptTask.class).getByName(ScriptTask.TASK_NAME));
     }
 }

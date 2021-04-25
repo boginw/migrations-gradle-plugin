@@ -5,7 +5,6 @@ import org.apache.ibatis.migration.options.SelectedOptions;
 import org.apache.ibatis.migration.options.SelectedPaths;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.api.tasks.options.Option;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +13,8 @@ import org.mockito.MockitoAnnotations;
 import org.mybatis.gradle.CommandFactory;
 import org.mybatis.gradle.MigrationsExtension;
 
-import java.io.File;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -25,6 +22,7 @@ import static org.mockito.Mockito.*;
 abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
     @Mock
     CommandFactory factory;
+    Project project;
     C command;
     T task;
 
@@ -33,8 +31,9 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
         command = mock(getMigrationsCommandType());
         MockitoAnnotations.openMocks(this);
 
-        Project project = ProjectBuilder.builder().build();
-
+        project = ProjectBuilder.builder().build();
+        MigrationsExtension defaultValues = new MigrationsExtension(project.getObjects(), project.getLayout());
+        project.getExtensions().add(MigrationsExtension.class, "migrations", defaultValues);
         task = project.getTasks().create(getType().getSimpleName(), getType(), factory);
         doReturn(command).when(factory).create(eq(getMigrationsCommandType()), any(SelectedOptions.class));
     }
@@ -46,13 +45,7 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
     @Test
     void expectToHaveTaskActionAnnotation() throws NoSuchMethodException {
         String nameOfRunMethodInRunnable = Runnable.class.getMethods()[0].getName();
-        assertTrue(InitTask.class.getMethod(nameOfRunMethodInRunnable).isAnnotationPresent(TaskAction.class));
-    }
-
-    @Test
-    void expectSetIdPatternToHaveOptionAnnotation() throws NoSuchMethodException {
-        Option annotation = InitTask.class.getMethod("setIdPattern", String.class).getAnnotation(Option.class);
-        assertEquals("idPattern", annotation.option());
+        assertTrue(getType().getMethod(nameOfRunMethodInRunnable).isAnnotationPresent(TaskAction.class));
     }
 
     @Test
@@ -63,7 +56,7 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
 
     @Test
     void whenTaskIsRun_expectEnvironmentPassedToCommand() {
-        SelectedOptions options = new SelectedOptions();
+        SelectedOptions options = getOptionsWithDefaultDir();
         options.setEnvironment("ENVIRONMENT");
 
         MigrationsExtension extension = getExtensionFromOptions(options);
@@ -75,8 +68,8 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
 
     @Test
     void whenTaskIsRun_expectBasePassedToCommand() {
-        SelectedOptions options = new SelectedOptions();
-        options.getPaths().setBasePath(new File("BASE-PATH"));
+        SelectedOptions options = getOptionsWithDefaultDir();
+        options.getPaths().setBasePath(project.getLayout().getProjectDirectory().dir("BASE-PATH").getAsFile());
 
         MigrationsExtension extension = getExtensionFromOptions(options);
         task.setExtension(extension);
@@ -87,7 +80,7 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
 
     @Test
     void whenTaskIsRun_expectForcePassedToCommand() {
-        SelectedOptions options = new SelectedOptions();
+        SelectedOptions options = getOptionsWithDefaultDir();
         options.setForce(true);
 
         MigrationsExtension extension = getExtensionFromOptions(options);
@@ -101,8 +94,16 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends Command> {
         return argThat(o -> optionsAreEqual(o, options));
     }
 
+    SelectedOptions getOptionsWithDefaultDir() {
+        SelectedOptions selectedOptions = new SelectedOptions();
+        selectedOptions.getPaths().setBasePath(
+                new MigrationsExtension(project.getObjects(), project.getLayout()).getBaseDir().get().getAsFile()
+        );
+        return selectedOptions;
+    }
+
     MigrationsExtension getExtensionFromOptions(SelectedOptions options) {
-        MigrationsExtension extension = MigrationsExtension.defaultValues();
+        MigrationsExtension extension = new MigrationsExtension(project.getObjects(), project.getLayout());
         extension.getEnvironment().set(options.getEnvironment());
         extension.getBaseDir().set(options.getPaths().getBasePath());
         extension.getForce().set(options.isForce());
