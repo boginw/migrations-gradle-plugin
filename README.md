@@ -11,7 +11,7 @@ First off, we need to apply the plugin to your project. The way we do this, is w
 
 ```groovy
 plugins {
-    id 'org.mybatis.gradle.migrations-gradle-plugin' version '0.1'
+    id 'com.github.boginw.mybatis-migrations' version '0.1'
 }
 ```
 

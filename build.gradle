@@ -1,11 +1,11 @@
 plugins {
     id "com.gradle.plugin-publish" version "0.14.0"
-    id 'java-gradle-plugin'
+    id "java-gradle-plugin"
     id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
-group 'org.mybatis.gradle'
-version '1.0-SNAPSHOT'
+group "com.github.boginw"
+version "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -14,32 +14,38 @@ repositories {
 gradlePlugin {
     plugins {
         migrationsPlugin {
-            id = 'org.mybatis.gradle.migrations-gradle-plugin'
-            implementationClass = 'org.mybatis.gradle.MigrationsPlugin'
+            id = "com.github.boginw.mybatis-migrations"
+            implementationClass = "com.github.boginw.mybatis_migrations.MigrationsPlugin"
         }
     }
 }
 
 pluginBundle {
-    website = 'https://github.com/boginw/migrations-gradle-plugin'
-    vcsUrl = 'https://github.com/boginw/migrations-gradle-plugin'
-    description = 'Run MyBatis Migrations commands through Gradle'
+    website = "https://github.com/boginw/migrations-gradle-plugin"
+    vcsUrl = "https://github.com/boginw/migrations-gradle-plugin"
+    description = "Run MyBatis Migrations commands through Gradle"
     plugins {
         migrationsPlugin {
-            displayName = 'MyBatis Migrations Plugin'
-            tags = ['tool', 'database', 'mybatis', 'migrations']
-            version = '0.1'
+            displayName = "MyBatis Migrations Plugin"
+            tags = ["tool", "database", "mybatis", "migrations"]
+            version = "0.1"
         }
+    }
+
+    mavenCoordinates {
+        groupId = "com.github.boginw"
+        artifactId = "mybatis-migrations"
+        version = "0.1"
     }
 }
 
 dependencies {
     compileOnly(gradleApi())
     testImplementation gradleTestKit()
-    implementation 'org.mybatis:mybatis-migrations:3.3.9'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    implementation "org.mybatis:mybatis-migrations:3.3.9"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.1"
     testImplementation "org.mockito:mockito-core:3.+"
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
 
 tasks.withType(Test).configureEach {
