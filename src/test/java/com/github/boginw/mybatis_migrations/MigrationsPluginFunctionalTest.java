@@ -1,13 +1,13 @@
 package com.github.boginw.mybatis_migrations;
 
+import com.github.boginw.mybatis_migrations.task.InitTask;
+import com.github.boginw.mybatis_migrations.task.NewTask;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import com.github.boginw.mybatis_migrations.task.InitTask;
-import com.github.boginw.mybatis_migrations.task.NewTask;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,33 +30,35 @@ class MigrationsPluginFunctionalTest {
         buildFile = Path.of(buildDir.getPath(), "build.gradle").toFile();
         assertTrue(buildFile.createNewFile());
 
-        appendToGradleBuildFile("""
-                plugins {
-                    id 'java'
-                    id 'com.github.boginw.mybatis-migrations'
-                }
-                migrations {
-                    baseDir = new File('%s')
-                    environment = '%s'
-                    force = %s
-                }
-                repositories {
-                        mavenCentral()
-                }
-                dependencies {
-                    implementation 'com.h2database:h2:1.4.200'
-                }
-                """.formatted(baseDir, environment, force)
+        appendToGradleBuildFile(
+            String.format(
+                "plugins {\n"
+                    + "    id 'java'\n"
+                    + "    id 'com.github.boginw.mybatis-migrations'\n"
+                    + "}\n"
+                    + "migrations {\n"
+                    + "    baseDir = new File('%s')\n"
+                    + "    environment = '%s'\n"
+                    + "    force = %s\n"
+                    + "}\n"
+                    + "repositories {\n"
+                    + "    mavenCentral()\n"
+                    + "}\n"
+                    + "dependencies {\n"
+                    + "    implementation 'com.h2database:h2:1.4.200'\n"
+                    + "}\n",
+                baseDir, environment, force
+            )
         );
     }
 
     @Test
     void whenBuildAndHasMigrationsExtension_expectSuccess() {
         BuildResult result = GradleRunner.create()
-                .withProjectDir(buildDir)
-                .withArguments("build")
-                .withPluginClasspath()
-                .build();
+            .withProjectDir(buildDir)
+            .withArguments("build")
+            .withPluginClasspath()
+            .build();
 
         result.getTasks().forEach(t -> assertNotEquals(t.getOutcome(), TaskOutcome.FAILED));
     }
@@ -64,10 +66,10 @@ class MigrationsPluginFunctionalTest {
     @Test
     void whenNewAndHasMigrationsExtension_expectBaseDirAndEnvironmentFileCreated() {
         BuildResult result = GradleRunner.create()
-                .withProjectDir(buildDir)
-                .withArguments(InitTask.TASK_NAME, "--debug")
-                .withPluginClasspath()
-                .build();
+            .withProjectDir(buildDir)
+            .withArguments(InitTask.TASK_NAME, "--debug")
+            .withPluginClasspath()
+            .build();
 
         result.getTasks().forEach(t -> assertEquals(t.getOutcome(), TaskOutcome.SUCCESS));
 
@@ -79,10 +81,10 @@ class MigrationsPluginFunctionalTest {
     @Test
     void whenHelpIsRunWithNewTask_expectNameToBeIncluded() {
         BuildResult result = GradleRunner.create()
-                .withProjectDir(buildDir)
-                .withArguments("help", "--task", NewTask.TASK_NAME)
-                .withPluginClasspath()
-                .build();
+            .withProjectDir(buildDir)
+            .withArguments("help", "--task", NewTask.TASK_NAME)
+            .withPluginClasspath()
+            .build();
 
         assertTrue(result.getOutput().contains("--name"));
     }

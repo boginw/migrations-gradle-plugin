@@ -1,11 +1,11 @@
 package com.github.boginw.mybatis_migrations.task;
 
+import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
+import com.github.boginw.mybatis_migrations.CommandFactory;
 import org.apache.ibatis.migration.commands.InitializeCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
-import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
-import com.github.boginw.mybatis_migrations.CommandFactory;
 
 import javax.inject.Inject;
 

@@ -4,7 +4,7 @@ import org.apache.ibatis.migration.commands.VersionCommand;
 import org.gradle.api.tasks.options.Option;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 class VersionTaskTest extends MigrationsTaskTest<VersionTask, VersionCommand> {

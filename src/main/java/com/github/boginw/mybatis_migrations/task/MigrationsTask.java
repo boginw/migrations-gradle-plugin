@@ -1,12 +1,12 @@
 package com.github.boginw.mybatis_migrations.task;
 
+import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
+import com.github.boginw.mybatis_migrations.CommandFactory;
+import com.github.boginw.mybatis_migrations.MigrationsExtension;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
-import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
-import com.github.boginw.mybatis_migrations.CommandFactory;
-import com.github.boginw.mybatis_migrations.MigrationsExtension;
 
 public abstract class MigrationsTask extends DefaultTask implements Runnable {
     public static final String TASK_PREFIX = "migrate";

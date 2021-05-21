@@ -1,5 +1,8 @@
 package com.github.boginw.mybatis_migrations.task;
 
+import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
+import com.github.boginw.mybatis_migrations.CommandFactory;
+import com.github.boginw.mybatis_migrations.MigrationsExtension;
 import org.apache.ibatis.migration.commands.BaseCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.apache.ibatis.migration.options.SelectedPaths;
@@ -10,9 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
-import com.github.boginw.mybatis_migrations.CommandFactory;
-import com.github.boginw.mybatis_migrations.MigrationsExtension;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -113,7 +113,7 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends BaseComman
     SelectedOptions getOptionsWithDefaultDir() {
         SelectedOptions selectedOptions = new SelectedOptions();
         selectedOptions.getPaths().setBasePath(
-                new MigrationsExtension(project.getObjects(), project.getLayout()).getBaseDir().get().getAsFile()
+            new MigrationsExtension(project.getObjects(), project.getLayout()).getBaseDir().get().getAsFile()
         );
         return selectedOptions;
     }
@@ -142,16 +142,16 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends BaseComman
             return false;
         }
         return pathsAreEqual(options.getPaths(), otherOptions.getPaths())
-                && Objects.equals(options.getEnvironment(), otherOptions.getEnvironment())
-                && Objects.equals(options.getTemplate(), otherOptions.getTemplate())
-                && Objects.equals(options.getIdPattern(), otherOptions.getIdPattern())
-                && Objects.equals(options.isForce(), otherOptions.isForce())
-                && Objects.equals(options.isTrace(), otherOptions.isTrace())
-                && Objects.equals(options.getCommand(), otherOptions.getCommand())
-                && Objects.equals(options.getParams(), otherOptions.getParams())
-                && Objects.equals(options.needsHelp(), otherOptions.needsHelp())
-                && Objects.equals(options.isQuiet(), otherOptions.isQuiet())
-                && Objects.equals(options.hasColor(), otherOptions.hasColor());
+            && Objects.equals(options.getEnvironment(), otherOptions.getEnvironment())
+            && Objects.equals(options.getTemplate(), otherOptions.getTemplate())
+            && Objects.equals(options.getIdPattern(), otherOptions.getIdPattern())
+            && Objects.equals(options.isForce(), otherOptions.isForce())
+            && Objects.equals(options.isTrace(), otherOptions.isTrace())
+            && Objects.equals(options.getCommand(), otherOptions.getCommand())
+            && Objects.equals(options.getParams(), otherOptions.getParams())
+            && Objects.equals(options.needsHelp(), otherOptions.needsHelp())
+            && Objects.equals(options.isQuiet(), otherOptions.isQuiet())
+            && Objects.equals(options.hasColor(), otherOptions.hasColor());
     }
 
     private boolean pathsAreEqual(SelectedPaths paths, SelectedPaths otherPaths) {
@@ -162,9 +162,9 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends BaseComman
             return false;
         }
         return Objects.equals(paths.getBasePath(), otherPaths.getBasePath())
-                && Objects.equals(paths.getEnvPath(), otherPaths.getEnvPath())
-                && Objects.equals(paths.getScriptPath(), otherPaths.getScriptPath())
-                && Objects.equals(paths.getDriverPath(), otherPaths.getDriverPath())
-                && Objects.equals(paths.getHookPath(), otherPaths.getHookPath());
+            && Objects.equals(paths.getEnvPath(), otherPaths.getEnvPath())
+            && Objects.equals(paths.getScriptPath(), otherPaths.getScriptPath())
+            && Objects.equals(paths.getDriverPath(), otherPaths.getDriverPath())
+            && Objects.equals(paths.getHookPath(), otherPaths.getHookPath());
     }
 }

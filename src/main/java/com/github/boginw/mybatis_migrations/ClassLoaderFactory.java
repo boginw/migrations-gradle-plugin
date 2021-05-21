@@ -11,18 +11,18 @@ import java.net.URLClassLoader;
 public class ClassLoaderFactory {
     public ClassLoader getClassLoader(Project project) {
         URL[] urls = project.getConvention()
-                .getPlugin(JavaPluginConvention.class)
-                .getSourceSets()
-                .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-                .getRuntimeClasspath()
-                .getFiles()
-                .stream().map(t -> {
-                    try {
-                        return t.toURI().toURL();
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).toArray(URL[]::new);
+            .getPlugin(JavaPluginConvention.class)
+            .getSourceSets()
+            .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+            .getRuntimeClasspath()
+            .getFiles()
+            .stream().map(t -> {
+                try {
+                    return t.toURI().toURL();
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }).toArray(URL[]::new);
 
         return new URLClassLoader(urls);
     }
