@@ -2,27 +2,27 @@
 
 [![Java CI](https://github.com/boginw/migrations-gradle-plugin/actions/workflows/java.yml/badge.svg)](https://github.com/boginw/migrations-gradle-plugin/actions/workflows/java.yml)
 
-Migration Gradle plugin is a Gradle plugin that aims to integrate, into the Gradle life cycle, the MyBatis 3 Migration
-tool. MyBatis 3 Migration Schema is a tool that helps you to manage database schema changes.
+Migration Gradle plugin is a Gradle plugin that integrates into the Gradle life cycle, the MyBatis 3 Migration tool.
+MyBatis 3 Migration Schema is a tool that helps you to manage database schema changes.
 
 ## Getting Started
 
-First off, we need to apply the plugin to your project. The way we do this, is with the `plugins` block:
+First off, make sure your project uses Java 11 or higher, as this is required. After that, we need to apply the plugin
+to your project. The way we do this is with the `plugins` block:
 
 ```groovy
 plugins {
-    id 'com.github.boginw.mybatis-migrations' version '0.1'
+    id 'com.github.boginw.mybatis-migrations' version '0.2.0'
 }
 ```
 
 After applying the plugin, all the same functionality of
-the [MyBatis Migrations CLI tool](http://mybatis.org/migrations/index.html), are now available by using Gradle Tasks.
+the [MyBatis Migrations CLI tool](http://mybatis.org/migrations/index.html) are now available by using Gradle Tasks.
 
 ## Configuration
 
-You might already have a setup going, or you just want something custom. In this case, the plugin provides a
-configuration block named `migrations`, which you can use to change the defaults of the tasks. The plugin allows
-configuring:
+You might already have a setup going, or you want something custom. In this case, the plugin provides a configuration
+block named `migrations`, which you can use to change the defaults of the tasks. The plugin allows configuring:
 
 * `baseDir`: The base directory for which tasks are run. Default is `migrations`.
 * `environment`: Which environment the tasks will use.
@@ -41,11 +41,11 @@ migrations {
 
 ## Tasks
 
-The plugin enables the same commands as are available in
-the [MyBatis Migrations CLI tool](http://mybatis.org/migrations/migrate.html), just throw Gradle instead. All tasks are
-prefixed with `migrate` followed by the command name with the initial letter of the command being capitalized, i.e.,
-`migrateInit`, for `init`. Gradle requires giving names to arguments, therefore, the arguments are not the same between
-the CLI tool and this plugin. Below is a list of commands and their arguments.
+The plugin enables the same commands as available in
+the [MyBatis Migrations CLI tool](http://mybatis.org/migrations/migrate.html) through Gradle. All tasks are prefixed
+with `migrate` followed by the command name with the initial letter of the command capitalized, i.e., `migrateInit`,
+for `init`. Gradle requires giving names to arguments; therefore, the arguments are not the same between the CLI tool
+and this plugin. Below is a list of commands and their arguments.
 
 * [`migrateInit`](http://mybatis.org/migrations/init.html): Initializes a new 'migration path', also called a '
   repository' (of migration scripts)
