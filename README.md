@@ -39,6 +39,9 @@ migrations {
 }
 ```
 
+It is possible to override the configured environment by providing a new environment with the `--env` option,
+i.e. `--env production`.
+
 ## Tasks
 
 The plugin enables the same commands as available in
