@@ -7,12 +7,15 @@ import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.options.Option;
 
 public abstract class MigrationsTask extends DefaultTask implements Runnable {
     public static final String TASK_PREFIX = "migrate";
     protected final CommandFactory factory;
     protected ClassLoaderFactory classLoaderFactory;
-    protected MigrationsExtension extension = getProject().getExtensions().getByType(MigrationsExtension.class);
+    protected MigrationsExtension extension = getProject()
+        .getExtensions()
+        .getByType(MigrationsExtension.class);
 
     protected MigrationsTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
         this.factory = factory;
@@ -21,6 +24,11 @@ public abstract class MigrationsTask extends DefaultTask implements Runnable {
 
     public void setExtension(MigrationsExtension extension) {
         this.extension = extension;
+    }
+
+    @Option(option = "env", description = "Environment to configure")
+    public void setEnvironment(String environment) {
+        extension.getEnvironment().set(environment);
     }
 
     @TaskAction

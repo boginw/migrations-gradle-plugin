@@ -89,6 +89,26 @@ class MigrationsPluginFunctionalTest {
         assertTrue(result.getOutput().contains("--name"));
     }
 
+    @Test
+    void whenEnvironmentOptionGiven_expectOptionToOverrideExtensionValue() {
+        String newEnvironment = "OTHER-ENVIRONMENT";
+        GradleRunner.create()
+            .withProjectDir(buildDir)
+            .withArguments(InitTask.TASK_NAME, "--env", newEnvironment)
+            .withPluginClasspath()
+            .build();
+
+        File file = Path.of(
+            buildDir.getPath(),
+            baseDir,
+            "environments",
+            newEnvironment + ".properties"
+        ).toFile();
+
+        assertTrue(file.exists());
+        assertTrue(file.isFile());
+    }
+
     protected void appendToGradleBuildFile(String append) throws IOException {
         try (FileWriter writer = new FileWriter(buildFile, true)) {
             writer.append(append);

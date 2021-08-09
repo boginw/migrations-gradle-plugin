@@ -83,6 +83,21 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends BaseComman
     }
 
     @Test
+    void whenTaskWithEnvironmentOption_expectEnvironmentOptionToOverrideExtension() {
+        SelectedOptions options = getOptionsWithDefaultDir();
+        options.setEnvironment("ENVIRONMENT");
+        SelectedOptions expectedOptions = getOptionsWithDefaultDir();
+        options.setEnvironment("ENVIRONMENT-2");
+
+        MigrationsExtension extension = getExtensionFromOptions(options);
+        task.setExtension(extension);
+        task.setEnvironment(expectedOptions.getEnvironment());
+        task.run();
+
+        verify(commandFactory).create(any(), optionsEqualTo(expectedOptions));
+    }
+
+    @Test
     void whenTaskIsRun_expectBasePassedToCommand() {
         SelectedOptions options = getOptionsWithDefaultDir();
         options.getPaths().setBasePath(project.getLayout().getProjectDirectory().dir("BASE-PATH").getAsFile());
