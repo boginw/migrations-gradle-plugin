@@ -5,7 +5,7 @@ plugins {
 }
 
 group "com.github.boginw"
-version "0.2.1-SNAPSHOT"
+version "0.2.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -34,25 +34,25 @@ pluginBundle {
         migrationsPlugin {
             displayName = "MyBatis Migrations Plugin"
             tags = ["tool", "database", "mybatis", "migrations"]
-            version = "0.2.1"
+            version = "0.2.2"
         }
     }
 
     mavenCoordinates {
         groupId = "com.github.boginw"
         artifactId = "mybatis-migrations"
-        version = "0.2.1"
+        version = "0.2.2"
     }
 }
 
 dependencies {
     compileOnly(gradleApi())
     testImplementation gradleTestKit()
-    implementation "org.mybatis:mybatis-migrations:3.3.9"
+    implementation "org.mybatis:mybatis-migrations:3.3.10"
     testImplementation platform("org.junit:junit-bom:5.8.2")
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
-    testImplementation "org.mockito:mockito-core:4.+"
+    testImplementation 'org.mockito:mockito-core:4.1.0'
 }
 
 tasks.withType(Test).configureEach {

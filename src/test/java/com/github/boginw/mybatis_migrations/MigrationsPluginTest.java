@@ -58,6 +58,11 @@ class MigrationsPluginTest {
     }
 
     @Test
+    void expectRedoToBeRegistered() {
+        assertNotNull(project.getTasks().withType(RedoTask.class).getByName(RedoTask.TASK_NAME));
+    }
+
+    @Test
     void expectVersionToBeRegistered() {
         assertNotNull(project.getTasks().withType(VersionTask.class).getByName(VersionTask.TASK_NAME));
     }

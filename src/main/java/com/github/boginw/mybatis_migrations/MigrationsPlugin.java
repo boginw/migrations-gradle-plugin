@@ -11,7 +11,7 @@ public class MigrationsPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().apply(JavaBasePlugin.class);
         project.getConfigurations().create("migrations");
-        project.getDependencies().add("migrations", "org.mybatis:mybatis-migrations:3.3.9");
+        project.getDependencies().add("migrations", "org.mybatis:mybatis-migrations:3.3.10");
 
         CommandFactory commandFactory = new CommandFactory();
         ClassLoaderFactory classLoaderFactory = new ClassLoaderFactory();
@@ -23,6 +23,7 @@ public class MigrationsPlugin implements Plugin<Project> {
         project.getTasks().create(NewTask.TASK_NAME, NewTask.class, commandFactory, classLoaderFactory);
         project.getTasks().create(UpTask.TASK_NAME, UpTask.class, commandFactory, classLoaderFactory);
         project.getTasks().create(DownTask.TASK_NAME, DownTask.class, commandFactory, classLoaderFactory);
+        project.getTasks().create(RedoTask.TASK_NAME, RedoTask.class, commandFactory, classLoaderFactory);
         project.getTasks().create(VersionTask.TASK_NAME, VersionTask.class, commandFactory, classLoaderFactory);
         project.getTasks().create(ScriptTask.TASK_NAME, ScriptTask.class, commandFactory, classLoaderFactory);
     }

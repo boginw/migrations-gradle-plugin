@@ -65,6 +65,8 @@ and this plugin. Below is a list of commands and their arguments.
 * [`migrateDown`](http://mybatis.org/migrations/updown.html): Runs the **undo** section of the last applied migration
   only
     * `--steps`: The number of migrations that should be undone
+* [`migrateRedo`](http://mybatis.org/migrations/redo.html): Is a shortcut for executing a down command and up command
+    * `--steps`: The number of migrations to redo. The default is 1.
 * [`migrateVersion`](http://mybatis.org/migrations/version.html): Migrate the schema to any specific version of the
   database you like
     * `--version`: The version you like to migrate to
