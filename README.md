@@ -2,8 +2,9 @@
 
 [![Java CI](https://github.com/boginw/migrations-gradle-plugin/actions/workflows/java.yml/badge.svg)](https://github.com/boginw/migrations-gradle-plugin/actions/workflows/java.yml)
 
-Migration Gradle plugin is a Gradle plugin that integrates into the Gradle life cycle, the MyBatis 3 Migration tool.
-MyBatis 3 Migration Schema is a tool that helps you to manage database schema changes.
+Migration Gradle plugin is a [Gradle plugin](https://plugins.gradle.org/plugin/com.github.boginw.mybatis-migrations)
+that integrates into the Gradle life cycle, the MyBatis 3 Migration tool. MyBatis 3 Migration Schema is a tool that
+helps you to manage database schema changes.
 
 ## Getting Started
 
