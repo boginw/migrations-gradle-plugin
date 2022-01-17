@@ -2,6 +2,7 @@ package com.github.boginw.mybatis_migrations.task;
 
 import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
 import com.github.boginw.mybatis_migrations.CommandFactory;
+import com.github.boginw.mybatis_migrations.PrintStreamFactory;
 import org.apache.ibatis.migration.commands.StatusCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
@@ -12,8 +13,12 @@ public class StatusTask extends MigrationsTask {
     public static final String TASK_NAME = TASK_PREFIX + "Status";
 
     @Inject
-    public StatusTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
-        super(factory, classLoaderFactory);
+    public StatusTask(
+        CommandFactory factory,
+        ClassLoaderFactory classLoaderFactory,
+        PrintStreamFactory printStreamFactory
+    ) {
+        super(factory, classLoaderFactory, printStreamFactory);
     }
 
     @Override
@@ -22,6 +27,6 @@ public class StatusTask extends MigrationsTask {
         SelectedOptions options = getSelectedOptions();
         StatusCommand command = factory.create(StatusCommand.class, options);
         command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
-        command.execute();
+        executeCommandWithPrintStream(command);
     }
 }

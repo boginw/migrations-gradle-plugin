@@ -3,23 +3,29 @@ package com.github.boginw.mybatis_migrations.task;
 import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
 import com.github.boginw.mybatis_migrations.CommandFactory;
 import com.github.boginw.mybatis_migrations.MigrationsExtension;
+import com.github.boginw.mybatis_migrations.PrintStreamFactory;
 import org.apache.ibatis.migration.commands.BaseCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.apache.ibatis.migration.options.SelectedPaths;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.options.Option;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -29,13 +35,18 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends BaseComman
     CommandFactory commandFactory;
     @Mock
     ClassLoaderFactory classLoaderFactory;
+    @Mock
+    PrintStreamFactory printStreamFactory;
+    @Mock
+    PrintStream printStream;
     Project project;
     C command;
     T task;
     URLClassLoader classLoader;
 
     @BeforeEach
-    void setUp() {
+    @OverridingMethodsMustInvokeSuper
+    void setUp() throws FileNotFoundException {
         command = mock(getMigrationsCommandType());
         MockitoAnnotations.openMocks(this);
 
@@ -44,8 +55,9 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends BaseComman
         when(classLoaderFactory.getClassLoader(project)).thenReturn(classLoader);
         MigrationsExtension defaultValues = new MigrationsExtension(project.getObjects(), project.getLayout());
         project.getExtensions().add(MigrationsExtension.class, "migrations", defaultValues);
-        task = project.getTasks().create(getType().getSimpleName(), getType(), commandFactory, classLoaderFactory);
+        task = project.getTasks().create(getType().getSimpleName(), getType(), commandFactory, classLoaderFactory, printStreamFactory);
         doReturn(command).when(commandFactory).create(eq(getMigrationsCommandType()), any(SelectedOptions.class));
+        doReturn(printStream).when(printStreamFactory).makeFromFileName(anyString());
     }
 
     abstract Class<T> getType();
@@ -56,6 +68,25 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends BaseComman
     void expectToHaveTaskActionAnnotation() throws NoSuchMethodException {
         String nameOfRunMethodInRunnable = Runnable.class.getMethods()[0].getName();
         assertTrue(getType().getMethod(nameOfRunMethodInRunnable).isAnnotationPresent(TaskAction.class));
+    }
+
+    @Test
+    void expectOutputToHaveOptionAnnotation() throws NoSuchMethodException {
+        Option annotation = getType().getMethod("setOutput", String.class).getAnnotation(Option.class);
+        assertEquals("output", annotation.option());
+    }
+
+    @Test
+    void whenOutputProvidedAndTaskIsRun_expectPrintStreamToBeSetOnCommand()
+        throws FileNotFoundException {
+
+        String output = "some-output";
+        task.setOutput(output);
+        task.run();
+
+        verify(printStreamFactory).makeFromFileName(output);
+        verify(command).setPrintStream(printStream);
+        verify(printStream).close();
     }
 
     @Test

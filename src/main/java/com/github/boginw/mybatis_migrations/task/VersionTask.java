@@ -2,6 +2,7 @@ package com.github.boginw.mybatis_migrations.task;
 
 import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
 import com.github.boginw.mybatis_migrations.CommandFactory;
+import com.github.boginw.mybatis_migrations.PrintStreamFactory;
 import org.apache.ibatis.migration.commands.VersionCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
@@ -14,8 +15,12 @@ public class VersionTask extends MigrationsTask {
     private String version;
 
     @Inject
-    public VersionTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
-        super(factory, classLoaderFactory);
+    public VersionTask(
+        CommandFactory factory,
+        ClassLoaderFactory classLoaderFactory,
+        PrintStreamFactory printStreamFactory
+    ) {
+        super(factory, classLoaderFactory, printStreamFactory);
     }
 
     @Option(option = "version", description = "Version to migrate to")
@@ -29,6 +34,6 @@ public class VersionTask extends MigrationsTask {
         SelectedOptions options = getSelectedOptions();
         VersionCommand command = factory.create(VersionCommand.class, options);
         command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
-        command.execute(version);
+        executeCommandWithPrintStream(command, version);
     }
 }

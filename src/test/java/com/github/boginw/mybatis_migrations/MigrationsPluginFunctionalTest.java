@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -107,6 +108,22 @@ class MigrationsPluginFunctionalTest {
 
         assertTrue(file.exists());
         assertTrue(file.isFile());
+    }
+
+    @Test
+    void whenOutputOptionGivenAndTaskIsRun_expectOutputToBeWrittenToFile() throws IOException {
+        File output = Path.of(buildDir.getPath(), "output.txt").toFile();
+
+        GradleRunner.create()
+            .withProjectDir(buildDir)
+            .withArguments(InitTask.TASK_NAME, "--output", output.getPath())
+            .withPluginClasspath()
+            .build();
+
+        assertTrue(output.exists());
+
+        String outputContents = new String(new FileInputStream(output).readAllBytes());
+        assertTrue(outputContents.contains(buildDir.getPath()));
     }
 
     protected void appendToGradleBuildFile(String append) throws IOException {

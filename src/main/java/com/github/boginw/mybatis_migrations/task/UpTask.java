@@ -2,6 +2,7 @@ package com.github.boginw.mybatis_migrations.task;
 
 import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
 import com.github.boginw.mybatis_migrations.CommandFactory;
+import com.github.boginw.mybatis_migrations.PrintStreamFactory;
 import org.apache.ibatis.migration.commands.UpCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
@@ -14,8 +15,12 @@ public class UpTask extends MigrationsTask {
     private String steps;
 
     @Inject
-    public UpTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
-        super(factory, classLoaderFactory);
+    public UpTask(
+        CommandFactory factory,
+        ClassLoaderFactory classLoaderFactory,
+        PrintStreamFactory printStreamFactory
+    ) {
+        super(factory, classLoaderFactory, printStreamFactory);
     }
 
     @Option(option = "steps", description = "Number of steps")
@@ -29,6 +34,6 @@ public class UpTask extends MigrationsTask {
         SelectedOptions options = getSelectedOptions();
         UpCommand command = factory.create(UpCommand.class, options);
         command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
-        command.execute(steps);
+        executeCommandWithPrintStream(command, steps);
     }
 }

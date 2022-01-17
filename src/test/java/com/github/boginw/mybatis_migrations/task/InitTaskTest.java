@@ -3,7 +3,6 @@ package com.github.boginw.mybatis_migrations.task;
 import org.apache.ibatis.migration.commands.InitializeCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.options.Option;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,12 +10,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 class InitTaskTest extends MigrationsTaskTest<InitTask, InitializeCommand> {
-
-    @Override
-    @BeforeEach
-    void setUp() {
-        super.setUp();
-    }
 
     @Test
     void expectSetIdPatternToHaveOptionAnnotation() throws NoSuchMethodException {

@@ -2,6 +2,7 @@ package com.github.boginw.mybatis_migrations.task;
 
 import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
 import com.github.boginw.mybatis_migrations.CommandFactory;
+import com.github.boginw.mybatis_migrations.PrintStreamFactory;
 import org.apache.ibatis.migration.commands.InitializeCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
@@ -14,8 +15,12 @@ public class InitTask extends MigrationsTask {
     private String idPattern;
 
     @Inject
-    public InitTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
-        super(factory, classLoaderFactory);
+    public InitTask(
+        CommandFactory factory,
+        ClassLoaderFactory classLoaderFactory,
+        PrintStreamFactory printStreamFactory
+    ) {
+        super(factory, classLoaderFactory, printStreamFactory);
     }
 
     @Option(option = "idPattern", description = "Default file prefix")
@@ -30,6 +35,6 @@ public class InitTask extends MigrationsTask {
         options.setIdPattern(idPattern);
         InitializeCommand command = factory.create(InitializeCommand.class, options);
         command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
-        command.execute();
+        executeCommandWithPrintStream(command);
     }
 }

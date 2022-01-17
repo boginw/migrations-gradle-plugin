@@ -48,6 +48,6 @@ class ScriptTaskTest extends MigrationsTaskTest<ScriptTask, ScriptCommand> {
         task.setTo(to);
         task.run();
 
-        verify(command).execute(from, to);
+        verify(command).execute(from + " " + to);
     }
 }

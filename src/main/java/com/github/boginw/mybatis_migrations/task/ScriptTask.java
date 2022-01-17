@@ -2,6 +2,7 @@ package com.github.boginw.mybatis_migrations.task;
 
 import com.github.boginw.mybatis_migrations.ClassLoaderFactory;
 import com.github.boginw.mybatis_migrations.CommandFactory;
+import com.github.boginw.mybatis_migrations.PrintStreamFactory;
 import org.apache.ibatis.migration.commands.ScriptCommand;
 import org.apache.ibatis.migration.options.SelectedOptions;
 import org.gradle.api.tasks.TaskAction;
@@ -15,16 +16,20 @@ public class ScriptTask extends MigrationsTask {
     private String to;
 
     @Inject
-    public ScriptTask(CommandFactory factory, ClassLoaderFactory classLoaderFactory) {
-        super(factory, classLoaderFactory);
+    public ScriptTask(
+        CommandFactory factory,
+        ClassLoaderFactory classLoaderFactory,
+        PrintStreamFactory printStreamFactory
+    ) {
+        super(factory, classLoaderFactory, printStreamFactory);
     }
 
-    @Option(option = "from", description = "Version to generate from")
+    @Option(option = "from", description = "Version to migrate from")
     public void setFrom(String from) {
         this.from = from;
     }
 
-    @Option(option = "to", description = "Version to generate to")
+    @Option(option = "to", description = "Version to migrate to")
     public void setTo(String to) {
         this.to = to;
     }
@@ -35,10 +40,8 @@ public class ScriptTask extends MigrationsTask {
         SelectedOptions options = getSelectedOptions();
         ScriptCommand command = factory.create(ScriptCommand.class, options);
         command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
-        if (to != null) {
-            command.execute(from, to);
-        } else {
-            command.execute(from);
-        }
+
+        String args = to != null ? from + " " + to : from;
+        executeCommandWithPrintStream(command, args);
     }
 }

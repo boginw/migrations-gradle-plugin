@@ -12,7 +12,7 @@ to your project. The way we do this is with the `plugins` block:
 
 ```groovy
 plugins {
-    id 'com.github.boginw.mybatis-migrations' version '0.2.2'
+    id 'com.github.boginw.mybatis-migrations' version '0.2.3'
 }
 ```
 
@@ -50,6 +50,10 @@ with `migrate` followed by the command name with the initial letter of the comma
 for `init`. Gradle requires giving names to arguments; therefore, the arguments are not the same between the CLI tool
 and this plugin. Below is a list of commands and their arguments.
 
+All commands have an `output` option. This option specifies where the output from commands should be printed to. You can
+set this option by specifying `--output <FILE-PATH>` where `<FILE-PATH>` is a path to a file where the output should be
+forwarded to.
+
 * [`migrateInit`](http://mybatis.org/migrations/init.html): Initializes a new 'migration path', also called a '
   repository' (of migration scripts)
     * `--idPattern`: Change the default timestamp based file prefix to number sequence
@@ -74,3 +78,5 @@ and this plugin. Below is a list of commands and their arguments.
   or position in the status log
 * [`migrateScript`](http://mybatis.org/migrations/script.html): Generate a script that can migrate a schema from one
   version to another
+    * `--from`: The version to migrate from
+    * `--to`: The version to migrate to
