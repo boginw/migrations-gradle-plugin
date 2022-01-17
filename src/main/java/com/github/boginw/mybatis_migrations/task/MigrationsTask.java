@@ -60,7 +60,6 @@ public abstract class MigrationsTask extends DefaultTask implements Runnable {
         return options;
     }
 
-    @Internal
     protected void executeCommandWithPrintStream(BaseCommand command, String... params) {
         try (PrintStream ignored = setPrintStreamOnCommand(command)) {
             command.execute(params);
