@@ -17,6 +17,7 @@ public class MigrationsPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().apply(JavaBasePlugin.class);
         project.getConfigurations().create("migrations");
+        project.getConfigurations().create("migrationsRuntime");
         project.getDependencies().add("migrations", "org.mybatis:mybatis-migrations:3.3.10");
 
         project.getExtensions().create("migrations", MigrationsExtension.class);

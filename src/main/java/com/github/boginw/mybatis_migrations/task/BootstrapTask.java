@@ -26,7 +26,6 @@ public class BootstrapTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         BootstrapCommand command = factory.create(BootstrapCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         executeCommandWithPrintStream(command);
     }
 }

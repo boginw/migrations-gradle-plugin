@@ -33,7 +33,6 @@ public class VersionTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         VersionCommand command = factory.create(VersionCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         executeCommandWithPrintStream(command, version);
     }
 }

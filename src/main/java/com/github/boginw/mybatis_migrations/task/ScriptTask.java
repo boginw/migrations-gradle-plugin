@@ -39,7 +39,6 @@ public class ScriptTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         ScriptCommand command = factory.create(ScriptCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
 
         String args = to != null ? from + " " + to : from;
         executeCommandWithPrintStream(command, args);

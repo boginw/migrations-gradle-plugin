@@ -26,7 +26,6 @@ public class PendingTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         PendingCommand command = factory.create(PendingCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         executeCommandWithPrintStream(command);
     }
 }

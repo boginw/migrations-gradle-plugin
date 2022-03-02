@@ -46,7 +46,9 @@ class MigrationsPluginFunctionalTest {
                     + "    mavenCentral()\n"
                     + "}\n"
                     + "dependencies {\n"
-                    + "    implementation 'com.h2database:h2:1.4.200'\n"
+                    + "    migrationsRuntime 'com.h2database:h2:1.4.200'\n"
+                    + "    implementation 'org.codehaus.groovy:groovy:3.0.9'\n"
+                    + "    migrationsRuntime 'org.codehaus.groovy:groovy-jsr223:3.0.9'\n"
                     + "}\n",
                 baseDir, environment, force
             )
@@ -126,8 +128,48 @@ class MigrationsPluginFunctionalTest {
         assertTrue(outputContents.contains(buildDir.getPath()));
     }
 
+    @Test
+    void whenHookAdded_expectScriptToRunOnHookEvent() throws IOException {
+        GradleRunner.create()
+            .withProjectDir(buildDir)
+            .withArguments(InitTask.TASK_NAME)
+            .withPluginClasspath()
+            .build();
+
+        File hooksDir = Path.of(buildDir.getPath(), baseDir, "hooks").toFile();
+        assertTrue(hooksDir.mkdir());
+
+        File hookFile = Path.of(hooksDir.getPath(), "test.groovy").toFile();
+
+        String message = "Groovy script ran successfully.";
+        String script = String.format("println \"%s.\"", message);
+
+        appendToFile(hookFile, script);
+
+        File environmentFile = Path.of(
+            buildDir.getPath(),
+            baseDir,
+            "environments",
+            environment + ".properties"
+        ).toFile();
+
+        appendToFile(environmentFile, "\nhook_before_new=groovy:test.groovy");
+
+        BuildResult result = GradleRunner.create()
+            .withProjectDir(buildDir)
+            .withArguments(NewTask.TASK_NAME, "--name", "migration", "--stacktrace")
+            .withPluginClasspath()
+            .build();
+
+        assertTrue(result.getOutput().contains(message));
+    }
+
     protected void appendToGradleBuildFile(String append) throws IOException {
-        try (FileWriter writer = new FileWriter(buildFile, true)) {
+        appendToFile(buildFile, append);
+    }
+
+    protected void appendToFile(File file, String append) throws IOException {
+        try (FileWriter writer = new FileWriter(file, true)) {
             writer.append(append);
         }
     }

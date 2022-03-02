@@ -13,7 +13,7 @@ to your project. The way we do this is with the `plugins` block:
 
 ```groovy
 plugins {
-    id 'com.github.boginw.mybatis-migrations' version '0.2.3'
+    id 'com.github.boginw.mybatis-migrations' version '0.3.0'
 }
 ```
 
@@ -42,6 +42,22 @@ migrations {
 
 It is possible to override the configured environment by providing a new environment with the `--env` option,
 i.e. `--env production`.
+
+### Database Drivers and Hook Languages
+
+The plugin removes the requirement of downloading jars and adding them to folders. Instead, the plugin loads all the
+project's dependencies from the main source set and passes them to MyBatis. The plugin also creates a configuration
+scope with the name `migrationsRuntime`, which you can use to register database drivers and hook languages (JSR-223). In
+the following the driver for [H2](https://www.h2database.com/html/main.html) is registered, along with dependencies for
+the [Groovy language](https://groovy-lang.org/) for hooks:
+
+```groovy
+dependencies {
+    migrationsRuntime 'com.h2database:h2:1.4.200'
+    implementation 'org.codehaus.groovy:groovy:3.0.9'
+    migrationsRuntime 'org.codehaus.groovy:groovy-jsr223:3.0.9'
+}
+```
 
 ## Tasks
 

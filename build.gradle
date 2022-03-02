@@ -5,7 +5,7 @@ plugins {
 }
 
 group "com.github.boginw"
-version "0.2.3-SNAPSHOT"
+version "0.3.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -34,14 +34,14 @@ pluginBundle {
         migrationsPlugin {
             displayName = "MyBatis Migrations Plugin"
             tags = ["tool", "database", "mybatis", "migrations"]
-            version = "0.2.3"
+            version = "0.3.0"
         }
     }
 
     mavenCoordinates {
         groupId = "com.github.boginw"
         artifactId = "mybatis-migrations"
-        version = "0.2.3"
+        version = "0.3.0"
     }
 }
 

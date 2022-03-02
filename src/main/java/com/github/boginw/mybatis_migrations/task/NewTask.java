@@ -33,7 +33,6 @@ public class NewTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         NewCommand command = factory.create(NewCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         executeCommandWithPrintStream(command, name);
     }
 }

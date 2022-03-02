@@ -33,7 +33,6 @@ public class UpTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         UpCommand command = factory.create(UpCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         executeCommandWithPrintStream(command, steps);
     }
 }

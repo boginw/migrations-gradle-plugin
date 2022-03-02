@@ -61,6 +61,10 @@ public abstract class MigrationsTask extends DefaultTask implements Runnable {
     }
 
     protected void executeCommandWithPrintStream(BaseCommand command, String... params) {
+        ClassLoader classLoader = classLoaderFactory.getClassLoader(getProject());
+        command.setDriverClassLoader(classLoader);
+        Thread.currentThread().setContextClassLoader(classLoader);
+
         try (PrintStream ignored = setPrintStreamOnCommand(command)) {
             command.execute(params);
         }

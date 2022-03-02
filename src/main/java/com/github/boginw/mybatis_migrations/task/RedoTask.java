@@ -33,7 +33,6 @@ public class RedoTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         RedoCommand command = factory.create(RedoCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         executeCommandWithPrintStream(command, steps);
     }
 }

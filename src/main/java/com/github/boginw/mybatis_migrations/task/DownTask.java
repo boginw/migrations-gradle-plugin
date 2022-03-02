@@ -33,7 +33,6 @@ public class DownTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         DownCommand command = factory.create(DownCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         executeCommandWithPrintStream(command, steps);
     }
 }

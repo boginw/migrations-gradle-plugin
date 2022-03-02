@@ -34,7 +34,6 @@ public class InitTask extends MigrationsTask {
         SelectedOptions options = getSelectedOptions();
         options.setIdPattern(idPattern);
         InitializeCommand command = factory.create(InitializeCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         executeCommandWithPrintStream(command);
     }
 }

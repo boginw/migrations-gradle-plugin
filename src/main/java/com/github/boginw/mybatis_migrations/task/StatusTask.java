@@ -26,7 +26,6 @@ public class StatusTask extends MigrationsTask {
     public void run() {
         SelectedOptions options = getSelectedOptions();
         StatusCommand command = factory.create(StatusCommand.class, options);
-        command.setDriverClassLoader(classLoaderFactory.getClassLoader(getProject()));
         executeCommandWithPrintStream(command);
     }
 }
