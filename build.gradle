@@ -48,7 +48,7 @@ pluginBundle {
 dependencies {
     compileOnly(gradleApi())
     testImplementation gradleTestKit()
-    implementation "org.mybatis:mybatis-migrations:3.3.10"
+    implementation "org.mybatis:mybatis-migrations:3.3.11"
     testImplementation platform("org.junit:junit-bom:5.9.0")
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
