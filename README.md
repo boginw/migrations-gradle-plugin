@@ -13,7 +13,7 @@ to your project. The way we do this is with the `plugins` block:
 
 ```groovy
 plugins {
-    id 'com.github.boginw.mybatis-migrations' version '0.3.0'
+    id 'com.github.boginw.mybatis-migrations' version '0.3.1'
 }
 ```
 

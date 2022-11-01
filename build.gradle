@@ -1,11 +1,10 @@
 plugins {
-    id "com.gradle.plugin-publish" version "0.21.0"
+    id "com.gradle.plugin-publish" version "1.0.0"
     id "java-gradle-plugin"
-    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 group "com.github.boginw"
-version "0.3.0-SNAPSHOT"
+version "0.3.1"
 
 repositories {
     mavenCentral()
@@ -17,31 +16,21 @@ java {
     }
 }
 
-gradlePlugin {
-    plugins {
-        migrationsPlugin {
-            id = "com.github.boginw.mybatis-migrations"
-            implementationClass = "com.github.boginw.mybatis_migrations.MigrationsPlugin"
-        }
-    }
-}
-
 pluginBundle {
     website = "https://github.com/boginw/migrations-gradle-plugin"
     vcsUrl = "https://github.com/boginw/migrations-gradle-plugin"
     description = "Run MyBatis Migrations commands through Gradle"
+    tags = ["tool", "database", "mybatis", "migrations", "sql"]
+}
+
+gradlePlugin {
     plugins {
         migrationsPlugin {
+            id = "com.github.boginw.mybatis-migrations"
             displayName = "MyBatis Migrations Plugin"
-            tags = ["tool", "database", "mybatis", "migrations"]
-            version = "0.3.0"
+            description = "Run MyBatis Migrations commands through Gradle"
+            implementationClass = "com.github.boginw.mybatis_migrations.MigrationsPlugin"
         }
-    }
-
-    mavenCoordinates {
-        groupId = "com.github.boginw"
-        artifactId = "mybatis-migrations"
-        version = "0.3.0"
     }
 }
 
