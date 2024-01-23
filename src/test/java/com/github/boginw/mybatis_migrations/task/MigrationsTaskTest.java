@@ -14,6 +14,7 @@ import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -92,7 +93,7 @@ abstract class MigrationsTaskTest<T extends MigrationsTask, C extends BaseComman
     @Test
     void whenTaskIsRun_expectCommandToBeRun() {
         task.run();
-        verify(command).execute(any());
+        verify(command).execute(any(String[].class));
     }
 
     @Test
