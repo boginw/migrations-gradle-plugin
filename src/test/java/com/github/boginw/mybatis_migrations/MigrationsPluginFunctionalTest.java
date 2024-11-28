@@ -63,7 +63,7 @@ class MigrationsPluginFunctionalTest {
             .withPluginClasspath()
             .build();
 
-        result.getTasks().forEach(t -> assertNotEquals(t.getOutcome(), TaskOutcome.FAILED));
+        result.getTasks().forEach(t -> assertNotEquals(TaskOutcome.FAILED, t.getOutcome()));
     }
 
     @Test
@@ -74,7 +74,7 @@ class MigrationsPluginFunctionalTest {
             .withPluginClasspath()
             .build();
 
-        result.getTasks().forEach(t -> assertEquals(t.getOutcome(), TaskOutcome.SUCCESS));
+        result.getTasks().forEach(t -> assertEquals(TaskOutcome.SUCCESS, t.getOutcome()));
 
         File file = Path.of(buildDir.getPath(), baseDir, "environments", environment + ".properties").toFile();
         assertTrue(file.exists());
@@ -124,8 +124,10 @@ class MigrationsPluginFunctionalTest {
 
         assertTrue(output.exists());
 
-        String outputContents = new String(new FileInputStream(output).readAllBytes());
-        assertTrue(outputContents.contains(buildDir.getPath()));
+        try (var stream = new FileInputStream(output)) {
+            String outputContents = new String(stream.readAllBytes());
+            assertTrue(outputContents.contains(buildDir.getPath()));
+        }
     }
 
     @Test

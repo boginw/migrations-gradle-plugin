@@ -4,7 +4,7 @@ plugins {
 }
 
 group "com.github.boginw"
-version "0.3.1"
+version "0.4.0"
 
 repositories {
     mavenCentral()
@@ -16,19 +16,16 @@ java {
     }
 }
 
-pluginBundle {
+gradlePlugin {
     website = "https://github.com/boginw/migrations-gradle-plugin"
     vcsUrl = "https://github.com/boginw/migrations-gradle-plugin"
-    description = "Run MyBatis Migrations commands through Gradle"
-    tags = ["tool", "database", "mybatis", "migrations", "sql"]
-}
 
-gradlePlugin {
     plugins {
         migrationsPlugin {
             id = "com.github.boginw.mybatis-migrations"
             displayName = "MyBatis Migrations Plugin"
             description = "Run MyBatis Migrations commands through Gradle"
+            tags.addAll("tool", "database", "mybatis", "migrations", "sql")
             implementationClass = "com.github.boginw.mybatis_migrations.MigrationsPlugin"
         }
     }
@@ -37,11 +34,12 @@ gradlePlugin {
 dependencies {
     compileOnly(gradleApi())
     testImplementation gradleTestKit()
-    implementation "org.mybatis:mybatis-migrations:3.3.11"
+    implementation "org.mybatis:mybatis-migrations:3.4.0"
     testImplementation platform("org.junit:junit-bom:5.11.3")
     testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
-    testImplementation 'org.mockito:mockito-core:5.14.2'
+    testImplementation "org.mockito:mockito-core:5.14.2"
 }
 
 tasks.withType(Test).configureEach {

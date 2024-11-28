@@ -1,13 +1,14 @@
 package com.github.boginw.mybatis_migrations;
 
 import org.gradle.api.Project;
-import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class ClassLoaderFactory {
@@ -36,8 +37,11 @@ public class ClassLoaderFactory {
     }
 
     private Stream<File> getMainSourceSetFiles(Project project) {
-        return project.getConvention()
-            .getPlugin(JavaPluginConvention.class)
+        var extension = Objects.requireNonNull(
+            project.getExtensions().findByType(JavaPluginExtension.class)
+        );
+
+        return extension
             .getSourceSets()
             .getByName(SourceSet.MAIN_SOURCE_SET_NAME)
             .getRuntimeClasspath()
