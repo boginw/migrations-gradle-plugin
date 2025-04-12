@@ -17,6 +17,19 @@ plugins {
 }
 ```
 
+<details>
+
+<summary>Kotlin</summary>
+
+```kts
+plugins {
+    id("com.github.boginw.mybatis-migrations") version "0.4.0"
+}
+```
+
+</details>
+
+
 After applying the plugin, all the same functionality of
 the [MyBatis Migrations CLI tool](http://mybatis.org/migrations/index.html) are now available by using Gradle Tasks.
 
@@ -40,6 +53,21 @@ migrations {
 }
 ```
 
+<details>
+
+<summary>Kotlin</summary>
+
+```kts
+migrations {
+    baseDir = File("migrations")
+    environment = "development"
+    force = true
+}
+```
+
+</details>
+
+
 It is possible to override the configured environment by providing a new environment with the `--env` option,
 i.e. `--env production`.
 
@@ -53,11 +81,25 @@ the [Groovy language](https://groovy-lang.org/) for hooks:
 
 ```groovy
 dependencies {
-    migrationsRuntime 'com.h2database:h2:1.4.200'
-    implementation 'org.codehaus.groovy:groovy:3.0.9'
-    migrationsRuntime 'org.codehaus.groovy:groovy-jsr223:3.0.9'
+    migrationsRuntime 'com.h2database:h2:2.3.232'
+    implementation 'org.apache.groovy:groovy:4.0.26'
+    migrationsRuntime 'org.apache.groovy:groovy-jsr223:4.0.26'
 }
 ```
+
+<details>
+
+<summary>Kotlin</summary>
+
+```kts
+dependencies {
+    migrationsRuntime("com.h2database:h2:2.3.232")
+    implementation("org.apache.groovy:groovy:4.0.26")
+    migrationsRuntime("org.apache.groovy:groovy-jsr223:4.0.26")
+}
+```
+
+</details>
 
 ## Tasks
 
